@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CuentaClara — Gestión de Negocios 100% Offline</title>
+    <meta name="description" content="Punto de venta, inventario, clientes y reportes. Funciona sin internet. Para mipymes, bodegas y tiendas cubanas.">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" href="./icon-512.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.15; }
+        .blob-1 { width: 500px; height: 500px; background: #2563eb; top: -200px; left: -150px; }
+        .blob-2 { width: 600px; height: 600px; background: #6366f1; top: 40%; right: -200px; }
+        .blob-3 { width: 400px; height: 400px; background: #10b981; bottom: -100px; left: 30%; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 100;
+        }
+        .nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 20px; }
+        .logo-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #6366f1, #7c3aed);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a { color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: #e2e8f0; }
+        .btn-cta {
+            padding: 10px 20px; border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #6366f1);
+            color: white !important; font-weight: 700;
+            transition: transform 0.2s;
+        }
+        .btn-cta:hover { transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            .nav-links a:not(.btn-cta) { display: none; }
+        }
+        .hero { padding: 80px 0 60px; text-align: center; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; border-radius: 999px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399; font-size: 13px; font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            margin-bottom: 24px;
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #34d399;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+        h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 900; line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: clamp(16px, 2vw, 22px);
+            color: #94a3b8; max-width: 720px;
+            margin: 0 auto 40px;
+        }
+        .hero p strong { color: #e2e8f0; }
+        .hero-buttons {
+            display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+        }
+        .btn {
+            padding: 16px 32px; border-radius: 14px;
+            font-weight: 800; font-size: 17px;
+            text-decoration: none; display: inline-flex;
+            align-items: center; gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none; cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #6366f1);
+            color: white;
+            box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.6);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 24px 50px -12px rgba(99, 102, 241, 0.8); }
+        .btn-outline {
+            background: transparent; color: #e2e8f0;
+            border: 2px solid rgba(148, 163, 184, 0.3);
+        }
+        .btn-outline:hover { border-color: #6366f1; color: #a5b4fc; transform: translateY(-3px); }
+        .trust {
+            display: flex; gap: 32px; justify-content: center;
+            flex-wrap: wrap; margin-top: 48px;
+            padding: 24px; border-radius: 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .trust-item { display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-weight: 600; font-size: 14px; }
+        .section { padding: 80px 0; }
+        .section-title {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 900; text-align: center;
+            margin-bottom: 12px; color: #e2e8f0;
+        }
+        .section-sub {
+            text-align: center; color: #94a3b8;
+            font-size: 17px; max-width: 640px;
+            margin: 0 auto 60px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .feature {
+            padding: 28px; border-radius: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .feature:hover { transform: translateY(-4px); border-color: rgba(99, 102, 241, 0.4); }
+        .feature-icon {
+            width: 56px; height: 56px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; margin-bottom: 16px;
+        }
+        .fi-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .fi-violet { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .fi-emerald { background: linear-gradient(135deg, #10b981, #059669); }
+        .fi-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .fi-rose { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+        .fi-cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .fi-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        .fi-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+        .feature h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #f1f5f9; }
+        .feature p { color: #94a3b8; font-size: 14px; }
+        .highlight {
+            padding: 60px 40px; border-radius: 24px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.15));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            text-align: center;
+        }
+        .highlight h2 {
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 900; margin-bottom: 16px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .highlight p { font-size: 17px; color: #cbd5e1; max-width: 640px; margin: 0 auto 24px; }
+        .pricing {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px; max-width: 900px; margin: 0 auto;
+        }
+        .price-card {
+            padding: 32px 24px; border-radius: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            text-align: center; position: relative;
+        }
+        .price-card.featured {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(99, 102, 241, 0.2));
+            border: 2px solid rgba(99, 102, 241, 0.6);
+            transform: scale(1.05);
+        }
+        .badge-pop {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            padding: 4px 16px; border-radius: 999px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #78350f; font-size: 11px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .price-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+        .price-amount {
+            font-size: 42px; font-weight: 900; line-height: 1;
+            margin: 16px 0 4px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .price-period { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+        .price-features {
+            list-style: none; text-align: left;
+            margin: 24px 0; padding: 0;
+        }
+        .price-features li {
+            padding: 8px 0; font-size: 14px; color: #cbd5e1;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .price-features li::before { content: '✓'; color: #34d399; font-weight: 900; }
+        .cta-final {
+            text-align: center; padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(16, 185, 129, 0.15));
+            border-radius: 24px; margin: 60px 0;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        .cta-final h2 {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 900; margin-bottom: 16px; color: #f1f5f9;
+        }
+        .cta-final p { font-size: 17px; color: #cbd5e1; margin-bottom: 32px; max-width: 560px; margin-left: auto; margin-right: auto; }
+        .faq-list { max-width: 760px; margin: 0 auto; }
+        .faq-item {
+            padding: 20px; margin-bottom: 12px;
+            border-radius: 16px; background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .faq-q { font-weight: 800; color: #f1f5f9; margin-bottom: 8px; font-size: 15px; }
+        .faq-a { color: #94a3b8; font-size: 14px; }
+        footer {
+            padding: 40px 0; border-top: 1px solid rgba(148, 163, 184, 0.1);
+            text-align: center; color: #64748b; font-size: 13px;
+        }
+        footer strong { color: #94a3b8; }
+        @media (max-width: 640px) {
+            .hero { padding: 40px 0 30px; }
+            .section { padding: 50px 0; }
+            .trust { gap: 16px; padding: 16px; }
+            .highlight { padding: 40px 20px; }
+            .price-card.featured { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-decor">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <div class="logo-icon">📊</div>
+                    <span>CuentaClara</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Características</a>
+                    <a href="#precios">Precios</a>
+                    <a href="#faq">Preguntas</a>
+                    <a href="#comprar" class="btn-cta">Comprar ahora</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                <span>Funciona sin internet · Prueba gratis 15 días</span>
+            </div>
+            <h1>Tu negocio bajo control,<br>aunque no haya internet.</h1>
+            <p>
+                Punto de venta, inventario, clientes, fiados y reportes.
+                <strong>Todo en una app que funciona offline.</strong>
+                Para bodegas, mipymes, cafeterías, carnicerías y tiendas cubanas.
+            </p>
+            <div class="hero-buttons">
+                <a href="#precios" class="btn btn-primary">🎁 Probar gratis 15 días</a>
+                <a href="#features" class="btn btn-outline">Ver características →</a>
+            </div>
+            <div class="trust">
+                <div class="trust-item">📴 100% offline</div>
+                <div class="trust-item">🔒 Datos en tu dispositivo</div>
+                <div class="trust-item">💾 Backup exportable</div>
+                <div class="trust-item">♾️ Pago único</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">Todo lo que tu negocio necesita</h2>
+            <p class="section-sub">Las características que pediste, más las que no sabías que necesitabas.</p>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon fi-emerald">🛒</div>
+                    <h3>Ventas rápidas</h3>
+                    <p>Carrito, escáner de códigos de barras, múltiples métodos de pago (efectivo, transferencia, USD, EUR) y cobro en segundos.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-blue">📦</div>
+                    <h3>Inventario inteligente</h3>
+                    <p>Controla stock, alertas de mínimos, productos compuestos (pizzas, combos), vencimientos y transferencias entre sucursales.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-amber">👥</div>
+                    <h3>Clientes y fiados</h3>
+                    <p>Registra a quién le fías, cuánto debe, sus teléfonos y hasta precios especiales para mayoristas.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-violet">🏪</div>
+                    <h3>Múltiples sucursales</h3>
+                    <p>Administra varios locales con catálogos independientes. Cada tienda tiene sus productos, stock y vendedores.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-cyan">📷</div>
+                    <h3>Escáner de códigos</h3>
+                    <p>Usa la cámara del móvil o conecta una pistola Bluetooth. Vende 5 veces más rápido sin teclear códigos.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-indigo">💰</div>
+                    <h3>Cierre de caja</h3>
+                    <p>Controla el efectivo al final del día, registra gastos (luz, agua, salarios) y lleva las cuentas claras.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-rose">📊</div>
+                    <h3>Reportes y PDFs</h3>
+                    <p>Genera reportes de inventario, fiados y ventas. Exporta a CSV para Excel. Imprime tickets en térmica.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon fi-pink">👤</div>
+                    <h3>Control de vendedores</h3>
+                    <p>Cada vendedor con su PIN. Comisiones automáticas. Registro de todo lo que hace cada uno.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="highlight">
+                <h2>Funciona aunque se vaya la luz o el internet</h2>
+                <p>Los datos se guardan en tu teléfono. Puedes vender en modo avión, sin WiFi y sin datos móviles. Cuando quieras, haces un backup a USB o lo compartes.</p>
+                <a href="#precios" class="btn btn-primary">Ver planes →</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="precios">
+        <div class="container">
+            <h2 class="section-title">Precios simples, pago único</h2>
+            <p class="section-sub">Sin mensualidades. Sin suscripciones. La app es tuya para siempre.</p>
+            <div class="pricing">
+                <div class="price-card">
+                    <div class="price-title">📱 Móvil</div>
+                    <div class="price-amount">$20</div>
+                    <div class="price-period">pago único · Android</div>
+                    <ul class="price-features">
+                        <li>App completa en tu móvil</li>
+                        <li>1 licencia de por vida</li>
+                        <li>Actualizaciones gratis</li>
+                        <li>Soporte por WhatsApp</li>
+                    </ul>
+                    <a href="#comprar" class="btn btn-outline" style="width:100%; justify-content:center;">Comprar móvil</a>
+                </div>
+                <div class="price-card featured">
+                    <div class="badge-pop">Más vendido</div>
+                    <div class="price-title">💻 Pack completo</div>
+                    <div class="price-amount">$35</div>
+                    <div class="price-period">pago único · Android + Windows</div>
+                    <ul class="price-features">
+                        <li>App en móvil + en PC</li>
+                        <li>1 licencia de por vida</li>
+                        <li>Actualizaciones gratis</li>
+                        <li>Soporte prioritario</li>
+                        <li>Backup asistido</li>
+                    </ul>
+                    <a href="#comprar" class="btn btn-primary" style="width:100%; justify-content:center;">Comprar pack</a>
+                </div>
+                <div class="price-card">
+                    <div class="price-title">💼 Multi-sucursal</div>
+                    <div class="price-amount">$60</div>
+                    <div class="price-period">pago único · todo incluido</div>
+                    <ul class="price-features">
+                        <li>Todo lo del pack completo</li>
+                        <li>Sucursales ilimitadas</li>
+                        <li>Vendedores ilimitados</li>
+                        <li>Reportes consolidados</li>
+                        <li>Soporte VIP</li>
+                    </ul>
+                    <a href="#comprar" class="btn btn-outline" style="width:100%; justify-content:center;">Comprar multi</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="faq">
+        <div class="container">
+            <h2 class="section-title">Preguntas frecuentes</h2>
+            <p class="section-sub">Todo lo que necesitas saber antes de comprar.</p>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-q">¿Necesito internet para usar la app?</div>
+                    <div class="faq-a">No. La app funciona 100% offline. Los datos se guardan en tu teléfono o PC. Solo necesitas internet la primera vez para descargarla.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Qué pasa si cambio de teléfono?</div>
+                    <div class="faq-a">Exportas un backup desde Configuración, lo guardas en Google Drive o Telegram, y lo importas en el nuevo dispositivo. Todos los datos se restauran.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Puedo tener varias tiendas con productos distintos?</div>
+                    <div class="faq-a">Sí. Cada sucursal tiene su propio catálogo, stock y vendedores. Puedes ver reportes consolidados o por sucursal.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Funciona con impresora térmica Bluetooth?</div>
+                    <div class="faq-a">Sí. En Android, instala la app gratuita RawBT y podrás imprimir tickets en cualquier impresora térmica Bluetooth compatible con ESC/POS.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Qué pasa si olvido mi PIN?</div>
+                    <div class="faq-a">Contacta al administrador del sistema (el jefe del negocio) para que resetee tu PIN desde el panel de Usuarios.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Cómo activo la licencia después de comprarla?</div>
+                    <div class="faq-a">Recibirás un código por WhatsApp. Lo introduces en Configuración → Activar Licencia. La app se desbloquea de inmediato.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Los datos son míos o del desarrollador?</div>
+                    <div class="faq-a">Son 100% tuyos. Viven en tu dispositivo, no hay servidores externos. Nadie más puede verlos.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">¿Ofrecen descuentos por volumen?</div>
+                    <div class="faq-a">Sí. Si tienes varios locales o quieres comprar para varios negocios, contáctanos por WhatsApp para un precio especial.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="cta-final" id="comprar">
+            <h2>Empieza gratis por 15 días</h2>
+            <p>Descarga la app, pruébala con tu negocio y si te convence, activas la licencia. Sin tarjeta de crédito. Sin compromisos.</p>
+            <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20probar%20CuentaClara%20en%20mi%20negocio" class="btn btn-primary" target="_blank">
+                💬 Escribir por WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p><strong>CuentaClara</strong> · Gestión de negocios 100% offline</p>
+            <p style="margin-top: 8px;">Hecho en Cuba 🇨🇺 · Contacto: +53 55501545</p>
+            <p style="margin-top: 8px; font-size: 12px;">© 2026 CuentaClara. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
