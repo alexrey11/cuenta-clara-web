@@ -1,245 +1,1257 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CuentaClara — Gestión de Negocios 100% Offline</title>
-    <meta name="description" content="Punto de venta, inventario, clientes y reportes. Funciona sin internet. Para mipymes, bodegas y tiendas cubanas.">
+    <meta name="description"
+        content="Punto de venta, inventario, clientes y reportes. Funciona sin internet. Para mipymes, bodegas y tiendas cubanas.">
     <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph para compartir en WhatsApp/Facebook -->
+    <meta property="og:title" content="CuentaClara — Tu negocio bajo control sin internet">
+    <meta property="og:description"
+        content="Punto de venta, inventario, fiados y reportes. 100% offline. Prueba gratis 15 días.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="./icon-512.png">
+
     <link rel="icon" href="./icon-512.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <link rel="manifest" href="./manifest.json">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        /* ============================================================
+           RESET & VARIABLES
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        :root {
+            --bg: #0a0f1e;
+            --bg-2: #0f172a;
+            --card: rgba(30, 41, 59, 0.6);
+            --border: rgba(148, 163, 184, 0.12);
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-2: #6366f1;
+            --accent: #a78bfa;
+            --emerald: #10b981;
+            --amber: #f59e0b;
+            --rose: #f43f5e;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-            line-height: 1.6;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        .bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.15; }
-        .blob-1 { width: 500px; height: 500px; background: #2563eb; top: -200px; left: -150px; }
-        .blob-2 { width: 600px; height: 600px; background: #6366f1; top: 40%; right: -200px; }
-        .blob-3 { width: 400px; height: 400px; background: #10b981; bottom: -100px; left: 30%; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+        /* ============================================================
+           FONDO CON BLOBS
+           ============================================================ */
+        .bg-decor {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.18;
+            will-change: transform;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: #2563eb;
+            top: -200px;
+            left: -150px;
+            animation: float 18s ease-in-out infinite;
+        }
+
+        .blob-2 {
+            width: 600px;
+            height: 600px;
+            background: #6366f1;
+            top: 40%;
+            right: -200px;
+            animation: float 22s ease-in-out infinite reverse;
+        }
+
+        .blob-3 {
+            width: 400px;
+            height: 400px;
+            background: #10b981;
+            bottom: -100px;
+            left: 30%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -40px) scale(1.05);
+            }
+
+            66% {
+                transform: translate(-20px, 30px) scale(0.95);
+            }
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
         header {
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-            backdrop-filter: blur(10px);
-            position: sticky; top: 0;
-            background: rgba(15, 23, 42, 0.85);
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 100;
+            transition: padding 0.3s;
         }
-        .nav { display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 20px; }
+
+        header.scrolled {
+            padding: 10px 0;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 19px;
+        }
+
         .logo-icon {
-            width: 40px; height: 40px; border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #2563eb, #6366f1, #7c3aed);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 20px;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.7);
         }
-        .nav-links { display: flex; gap: 24px; align-items: center; }
-        .nav-links a { color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s; }
-        .nav-links a:hover { color: #e2e8f0; }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
         .btn-cta {
-            padding: 10px 20px; border-radius: 12px;
+            padding: 10px 20px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #2563eb, #6366f1);
-            color: white !important; font-weight: 700;
-            transition: transform 0.2s;
+            color: white !important;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px -8px rgba(99, 102, 241, 0.6);
         }
-        .btn-cta:hover { transform: translateY(-2px); }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 25px -8px rgba(99, 102, 241, 0.8);
+        }
+
+        /* Menú móvil */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 26px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
         @media (max-width: 768px) {
-            .nav-links a:not(.btn-cta) { display: none; }
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 68px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 23, 42, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                gap: 0;
+                padding: 16px 0;
+                border-bottom: 1px solid var(--border);
+                transform: translateY(-150%);
+                transition: transform 0.3s;
+                z-index: 99;
+            }
+
+            .nav-links.open {
+                transform: translateY(0);
+            }
+
+            .nav-links a {
+                width: 100%;
+                padding: 14px 24px;
+                text-align: left;
+                font-size: 16px;
+            }
+
+            .nav-links .btn-cta {
+                margin: 8px 24px;
+                width: calc(100% - 48px);
+                text-align: center;
+            }
         }
-        .hero { padding: 80px 0 60px; text-align: center; }
+
+        /* ============================================================
+           ANIMACIÓN FADE-IN AL SCROLL
+           ============================================================ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.3s;
+        }
+
+        .reveal-delay-4 {
+            transition-delay: 0.4s;
+        }
+
+        .reveal-delay-5 {
+            transition-delay: 0.5s;
+        }
+
+        .reveal-delay-6 {
+            transition-delay: 0.6s;
+        }
+
+        .reveal-delay-7 {
+            transition-delay: 0.7s;
+        }
+
+        .reveal-delay-8 {
+            transition-delay: 0.8s;
+        }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+
         .hero-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 8px 16px; border-radius: 999px;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399; font-size: 13px; font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            font-size: 13px;
+            font-weight: 700;
             border: 1px solid rgba(16, 185, 129, 0.25);
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
+
         .hero-badge .dot {
-            width: 8px; height: 8px; border-radius: 50%; background: #34d399;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34d399;
             animation: pulse 2s infinite;
         }
+
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.85); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.85);
+            }
         }
+
         h1 {
-            font-size: clamp(36px, 6vw, 64px);
-            font-weight: 900; line-height: 1.1;
+            font-size: clamp(34px, 6vw, 68px);
+            font-weight: 900;
+            line-height: 1.05;
             margin-bottom: 24px;
-            background: linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa);
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa, #60a5fa);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: shine 8s ease infinite;
         }
-        .hero p {
-            font-size: clamp(16px, 2vw, 22px);
-            color: #94a3b8; max-width: 720px;
+
+        @keyframes shine {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero p.lead {
+            font-size: clamp(16px, 1.8vw, 21px);
+            color: var(--text-dim);
+            max-width: 700px;
             margin: 0 auto 40px;
         }
-        .hero p strong { color: #e2e8f0; }
+
+        .hero p.lead strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
         .hero-buttons {
-            display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
+
         .btn {
-            padding: 16px 32px; border-radius: 14px;
-            font-weight: 800; font-size: 17px;
-            text-decoration: none; display: inline-flex;
-            align-items: center; gap: 8px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none; cursor: pointer;
+            padding: 15px 30px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
         }
+
         .btn-primary {
             background: linear-gradient(135deg, #2563eb, #6366f1);
             color: white;
             box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.6);
         }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 24px 50px -12px rgba(99, 102, 241, 0.8); }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 24px 50px -12px rgba(99, 102, 241, 0.85);
+        }
+
         .btn-outline {
-            background: transparent; color: #e2e8f0;
-            border: 2px solid rgba(148, 163, 184, 0.3);
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
         }
-        .btn-outline:hover { border-color: #6366f1; color: #a5b4fc; transform: translateY(-3px); }
+
+        .btn-outline:hover {
+            border-color: #6366f1;
+            color: #a5b4fc;
+            transform: translateY(-3px);
+        }
+
+        /* ============================================================
+           MOCKUP DEL TELÉFONO
+           ============================================================ */
+        .mockup-wrapper {
+            margin-top: 70px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            perspective: 1200px;
+        }
+
+        .mockup-phone {
+            width: 280px;
+            height: 560px;
+            border-radius: 40px;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 3px solid rgba(148, 163, 184, 0.2);
+            box-shadow:
+                0 40px 80px -30px rgba(99, 102, 241, 0.5),
+                0 0 0 8px rgba(30, 41, 59, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            position: relative;
+            transform: rotateX(8deg) rotateY(-6deg);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mockup-phone:hover {
+            transform: rotateX(0) rotateY(0) scale(1.02);
+        }
+
+        .mockup-phone::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 6px;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .mockup-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            background: linear-gradient(180deg, #0f172a, #1e293b);
+            overflow: hidden;
+            padding: 30px 14px 14px;
+            position: relative;
+        }
+
+        .mockup-header {
+            background: linear-gradient(135deg, #2563eb, #6366f1);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .mockup-header-titulo {
+            font-size: 11px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .mockup-header-sub {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .mockup-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mockup-card-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .mockup-card-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .mockup-card-name {
+            font-size: 9px;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .mockup-card-price {
+            font-size: 11px;
+            font-weight: 900;
+            color: #60a5fa;
+        }
+
+        .mockup-total {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .mockup-total-label {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mockup-total-amount {
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .mockup-btn {
+            background: linear-gradient(135deg, #2563eb, #6366f1);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            margin-top: 8px;
+            font-size: 10px;
+            font-weight: 900;
+            color: white;
+        }
+
+        /* ============================================================
+           TRUST BAR
+           ============================================================ */
         .trust {
-            display: flex; gap: 32px; justify-content: center;
-            flex-wrap: wrap; margin-top: 48px;
-            padding: 24px; border-radius: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 60px;
+            padding: 24px;
+            border-radius: 20px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border);
         }
-        .trust-item { display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-weight: 600; font-size: 14px; }
-        .section { padding: 80px 0; }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .trust-item .icon {
+            font-size: 20px;
+        }
+
+        /* ============================================================
+           SECCIONES
+           ============================================================ */
+        .section {
+            padding: 90px 0;
+        }
+
         .section-title {
-            font-size: clamp(28px, 4vw, 42px);
-            font-weight: 900; text-align: center;
-            margin-bottom: 12px; color: #e2e8f0;
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 14px;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            line-height: 1.15;
         }
+
         .section-sub {
-            text-align: center; color: #94a3b8;
-            font-size: 17px; max-width: 640px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 17px;
+            max-width: 640px;
             margin: 0 auto 60px;
         }
+
+        /* ============================================================
+           FEATURES
+           ============================================================ */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
+
         .feature {
-            padding: 28px; border-radius: 20px;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            transition: transform 0.2s, border-color 0.2s;
+            padding: 28px;
+            border-radius: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-        .feature:hover { transform: translateY(-4px); border-color: rgba(99, 102, 241, 0.4); }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.1), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature:hover {
+            transform: translateY(-6px);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 20px 40px -20px rgba(99, 102, 241, 0.4);
+        }
+
+        .feature:hover::before {
+            opacity: 1;
+        }
+
+        .feature>* {
+            position: relative;
+            z-index: 1;
+        }
+
         .feature-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 26px; margin-bottom: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.6);
         }
-        .fi-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        .fi-violet { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-        .fi-emerald { background: linear-gradient(135deg, #10b981, #059669); }
-        .fi-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .fi-rose { background: linear-gradient(135deg, #f43f5e, #e11d48); }
-        .fi-cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-        .fi-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-        .fi-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
-        .feature h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #f1f5f9; }
-        .feature p { color: #94a3b8; font-size: 14px; }
+
+        .fi-blue {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .fi-violet {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .fi-emerald {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .fi-amber {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .fi-rose {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+        }
+
+        .fi-cyan {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .fi-indigo {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .fi-pink {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+        }
+
+        .feature h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+        }
+
+        .feature p {
+            color: var(--text-dim);
+            font-size: 14.5px;
+            line-height: 1.6;
+        }
+
+        /* ============================================================
+           HIGHLIGHT OFFLINE
+           ============================================================ */
         .highlight {
-            padding: 60px 40px; border-radius: 24px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.15));
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 70px 40px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(99, 102, 241, 0.12));
+            border: 1px solid rgba(99, 102, 241, 0.25);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
+
+        .highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%);
+            pointer-events: none;
+        }
+
+        .highlight-content {
+            position: relative;
+            z-index: 1;
+        }
+
         .highlight h2 {
-            font-size: clamp(24px, 3vw, 36px);
-            font-weight: 900; margin-bottom: 16px;
+            font-size: clamp(24px, 3.5vw, 40px);
+            font-weight: 900;
+            margin-bottom: 18px;
+            letter-spacing: -0.02em;
             background: linear-gradient(135deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .highlight p { font-size: 17px; color: #cbd5e1; max-width: 640px; margin: 0 auto 24px; }
+
+        .highlight p {
+            font-size: 17px;
+            color: #cbd5e1;
+            max-width: 640px;
+            margin: 0 auto 28px;
+        }
+
+        /* ============================================================
+           CONTADORES
+           ============================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+            margin-top: 50px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .stat-number {
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================================
+           TESTIMONIOS
+           ============================================================ */
+        .testimonios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .testimonio {
+            padding: 28px;
+            border-radius: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .testimonio::before {
+            content: '"';
+            position: absolute;
+            top: 8px;
+            left: 20px;
+            font-size: 72px;
+            color: rgba(99, 102, 241, 0.25);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonio-text {
+            color: #cbd5e1;
+            font-size: 14.5px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            padding-top: 20px;
+            font-style: italic;
+        }
+
+        .testimonio-autor {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .testimonio-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        .testimonio-info {
+            flex: 1;
+        }
+
+        .testimonio-nombre {
+            font-weight: 800;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .testimonio-cargo {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .testimonio-stars {
+            color: #fbbf24;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        /* ============================================================
+           PRICING
+           ============================================================ */
         .pricing {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px; max-width: 900px; margin: 0 auto;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 22px;
+            max-width: 960px;
+            margin: 0 auto;
+            align-items: stretch;
         }
+
         .price-card {
-            padding: 32px 24px; border-radius: 20px;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            text-align: center; position: relative;
+            padding: 36px 26px;
+            border-radius: 24px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, border-color 0.3s;
         }
+
+        .price-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
         .price-card.featured {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(99, 102, 241, 0.2));
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(99, 102, 241, 0.18));
             border: 2px solid rgba(99, 102, 241, 0.6);
-            transform: scale(1.05);
+            box-shadow: 0 30px 60px -30px rgba(99, 102, 241, 0.6);
         }
+
+        @media (min-width: 900px) {
+            .price-card.featured {
+                transform: scale(1.05);
+            }
+
+            .price-card.featured:hover {
+                transform: scale(1.05) translateY(-6px);
+            }
+        }
+
         .badge-pop {
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-            padding: 4px 16px; border-radius: 999px;
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 18px;
+            border-radius: 999px;
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #78350f; font-size: 11px; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #451a03;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 8px 20px -8px rgba(245, 158, 11, 0.6);
         }
-        .price-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+
+        .price-title {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
         .price-amount {
-            font-size: 42px; font-weight: 900; line-height: 1;
-            margin: 16px 0 4px;
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1;
+            margin: 18px 0 6px;
+            letter-spacing: -0.03em;
             background: linear-gradient(135deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .price-period { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+
+        .price-period {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 26px;
+        }
+
         .price-features {
-            list-style: none; text-align: left;
-            margin: 24px 0; padding: 0;
+            list-style: none;
+            text-align: left;
+            margin: 0 0 28px;
+            padding: 0;
+            flex: 1;
         }
+
         .price-features li {
-            padding: 8px 0; font-size: 14px; color: #cbd5e1;
-            display: flex; align-items: center; gap: 8px;
+            padding: 9px 0;
+            font-size: 14px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .price-features li::before { content: '✓'; color: #34d399; font-weight: 900; }
-        .cta-final {
-            text-align: center; padding: 80px 20px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(16, 185, 129, 0.15));
-            border-radius: 24px; margin: 60px 0;
-            border: 1px solid rgba(99, 102, 241, 0.3);
+
+        .price-features li::before {
+            content: '✓';
+            color: #34d399;
+            font-weight: 900;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 185, 129, 0.15);
+            border-radius: 50%;
+            font-size: 11px;
         }
-        .cta-final h2 {
-            font-size: clamp(28px, 4vw, 40px);
-            font-weight: 900; margin-bottom: 16px; color: #f1f5f9;
+
+        /* ============================================================
+           FAQ
+           ============================================================ */
+        .faq-list {
+            max-width: 780px;
+            margin: 0 auto;
         }
-        .cta-final p { font-size: 17px; color: #cbd5e1; margin-bottom: 32px; max-width: 560px; margin-left: auto; margin-right: auto; }
-        .faq-list { max-width: 760px; margin: 0 auto; }
+
         .faq-item {
-            padding: 20px; margin-bottom: 12px;
-            border-radius: 16px; background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.1);
+            margin-bottom: 12px;
+            border-radius: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: border-color 0.3s, background 0.3s;
         }
-        .faq-q { font-weight: 800; color: #f1f5f9; margin-bottom: 8px; font-size: 15px; }
-        .faq-a { color: #94a3b8; font-size: 14px; }
+
+        .faq-item.open {
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .faq-q {
+            font-weight: 800;
+            color: #f1f5f9;
+            font-size: 15.5px;
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .faq-q:hover {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .faq-q .chevron {
+            font-size: 20px;
+            color: var(--text-dim);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .chevron {
+            transform: rotate(180deg);
+            color: #a5b4fc;
+        }
+
+        .faq-a {
+            color: var(--text-dim);
+            font-size: 14.5px;
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s;
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 400px;
+            padding: 0 24px 22px;
+        }
+
+        /* ============================================================
+           CTA FINAL
+           ============================================================ */
+        .cta-final {
+            text-align: center;
+            padding: 80px 30px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(16, 185, 129, 0.15));
+            border-radius: 28px;
+            margin: 40px 0 80px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-final::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2), transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-final>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-final h2 {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 900;
+            margin-bottom: 18px;
+            color: #f1f5f9;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .cta-final p {
+            font-size: 17px;
+            color: #cbd5e1;
+            margin-bottom: 32px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
         footer {
-            padding: 40px 0; border-top: 1px solid rgba(148, 163, 184, 0.1);
-            text-align: center; color: #64748b; font-size: 13px;
+            padding: 50px 0 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
         }
-        footer strong { color: #94a3b8; }
+
+        footer strong {
+            color: var(--text-dim);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
+        }
+
+        /* ============================================================
+           BOTÓN FLOTANTE WHATSAPP
+           ============================================================ */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 30px -8px rgba(16, 185, 129, 0.6), 0 0 0 0 rgba(16, 185, 129, 0.7);
+            z-index: 90;
+            text-decoration: none;
+            animation: wa-pulse 2.5s infinite;
+            transition: transform 0.2s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        .whatsapp-float svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        @keyframes wa-pulse {
+            0% {
+                box-shadow: 0 15px 30px -8px rgba(16, 185, 129, 0.6), 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 15px 30px -8px rgba(16, 185, 129, 0.6), 0 0 0 20px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                box-shadow: 0 15px 30px -8px rgba(16, 185, 129, 0.6), 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 640px) {
-            .hero { padding: 40px 0 30px; }
-            .section { padding: 50px 0; }
-            .trust { gap: 16px; padding: 16px; }
-            .highlight { padding: 40px 20px; }
-            .price-card.featured { transform: none; }
+            .hero {
+                padding: 50px 0 40px;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .trust {
+                gap: 14px;
+                padding: 18px;
+            }
+
+            .trust-item {
+                font-size: 12.5px;
+            }
+
+            .highlight {
+                padding: 50px 24px;
+            }
+
+            .cta-final {
+                padding: 50px 20px;
+                margin: 20px 0 50px;
+            }
+
+            .mockup-phone {
+                width: 240px;
+                height: 480px;
+            }
+
+            .mockup-phone::before {
+                width: 50px;
+            }
+
+            .whatsapp-float {
+                width: 54px;
+                height: 54px;
+                bottom: 18px;
+                right: 18px;
+            }
+
+            .whatsapp-float svg {
+                width: 28px;
+                height: 28px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="bg-decor">
         <div class="blob blob-1"></div>
@@ -247,89 +1259,163 @@
         <div class="blob blob-3"></div>
     </div>
 
-    <header>
+    <!-- ============================================================
+         HEADER
+         ============================================================ -->
+    <header id="header">
         <div class="container">
             <nav class="nav">
                 <div class="logo">
                     <div class="logo-icon">📊</div>
                     <span>CuentaClara</span>
                 </div>
-                <div class="nav-links">
+                <button class="menu-toggle" id="menuToggle" aria-label="Menú">☰</button>
+                <div class="nav-links" id="navLinks">
                     <a href="#features">Características</a>
+                    <a href="#testimonios">Opiniones</a>
                     <a href="#precios">Precios</a>
                     <a href="#faq">Preguntas</a>
-                    <a href="#comprar" class="btn-cta">Comprar ahora</a>
+                    <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20probar%20CuentaClara" class="btn-cta"
+                        target="_blank">Comprar ahora</a>
                 </div>
             </nav>
         </div>
     </header>
 
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
     <section class="hero">
         <div class="container">
-            <div class="hero-badge">
+            <div class="hero-badge reveal">
                 <span class="dot"></span>
                 <span>Funciona sin internet · Prueba gratis 15 días</span>
             </div>
-            <h1>Tu negocio bajo control,<br>aunque no haya internet.</h1>
-            <p>
+            <h1 class="reveal reveal-delay-1">Tu negocio bajo control,<br>aunque no haya internet.</h1>
+            <p class="lead reveal reveal-delay-2">
                 Punto de venta, inventario, clientes, fiados y reportes.
                 <strong>Todo en una app que funciona offline.</strong>
                 Para bodegas, mipymes, cafeterías, carnicerías y tiendas cubanas.
             </p>
-            <div class="hero-buttons">
-                <a href="#precios" class="btn btn-primary">🎁 Probar gratis 15 días</a>
+            <div class="hero-buttons reveal reveal-delay-3">
+                <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20probar%20CuentaClara%20en%20mi%20negocio"
+                    class="btn btn-primary" target="_blank">
+                    🎁 Probar gratis 15 días
+                </a>
                 <a href="#features" class="btn btn-outline">Ver características →</a>
             </div>
-            <div class="trust">
-                <div class="trust-item">📴 100% offline</div>
-                <div class="trust-item">🔒 Datos en tu dispositivo</div>
-                <div class="trust-item">💾 Backup exportable</div>
-                <div class="trust-item">♾️ Pago único</div>
+
+            <!-- Mockup del teléfono -->
+            <div class="mockup-wrapper reveal reveal-delay-4">
+                <div class="mockup-phone">
+                    <div class="mockup-screen">
+                        <div class="mockup-header">
+                            <div class="mockup-header-titulo">🛒 Nueva Venta</div>
+                            <div class="mockup-header-sub">Bodega La Esquina</div>
+                        </div>
+
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon"
+                                style="background: linear-gradient(135deg, #3b82f6, #2563eb);">🥤</div>
+                            <div class="mockup-card-info">
+                                <div class="mockup-card-name">Coca Cola 2L</div>
+                                <div style="font-size: 8px; color: #64748b;">Stock: 24</div>
+                            </div>
+                            <div class="mockup-card-price">$500</div>
+                        </div>
+
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon"
+                                style="background: linear-gradient(135deg, #10b981, #059669);">🍞</div>
+                            <div class="mockup-card-info">
+                                <div class="mockup-card-name">Pan de molde</div>
+                                <div style="font-size: 8px; color: #64748b;">Stock: 15</div>
+                            </div>
+                            <div class="mockup-card-price">$120</div>
+                        </div>
+
+                        <div class="mockup-card">
+                            <div class="mockup-card-icon"
+                                style="background: linear-gradient(135deg, #f59e0b, #d97706);">🥛</div>
+                            <div class="mockup-card-info">
+                                <div class="mockup-card-name">Leche en polvo</div>
+                                <div style="font-size: 8px; color: #64748b;">Stock: 8</div>
+                            </div>
+                            <div class="mockup-card-price">$850</div>
+                        </div>
+
+                        <div class="mockup-total">
+                            <div class="mockup-total-label">Total</div>
+                            <div class="mockup-total-amount">$1,470</div>
+                        </div>
+
+                        <div class="mockup-btn">✓ Registrar Venta</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust bar -->
+            <div class="trust reveal reveal-delay-5">
+                <div class="trust-item"><span class="icon">📴</span> 100% offline</div>
+                <div class="trust-item"><span class="icon">🔒</span> Datos en tu dispositivo</div>
+                <div class="trust-item"><span class="icon">💾</span> Backup exportable</div>
+                <div class="trust-item"><span class="icon">♾️</span> Pago único</div>
             </div>
         </div>
     </section>
 
+    <!-- ============================================================
+         FEATURES
+         ============================================================ -->
     <section class="section" id="features">
         <div class="container">
-            <h2 class="section-title">Todo lo que tu negocio necesita</h2>
-            <p class="section-sub">Las características que pediste, más las que no sabías que necesitabas.</p>
+            <h2 class="section-title reveal">Todo lo que tu negocio necesita</h2>
+            <p class="section-sub reveal reveal-delay-1">Las características que pediste, más las que no sabías que
+                necesitabas.</p>
             <div class="features-grid">
-                <div class="feature">
+                <div class="feature reveal">
                     <div class="feature-icon fi-emerald">🛒</div>
                     <h3>Ventas rápidas</h3>
-                    <p>Carrito, escáner de códigos de barras, múltiples métodos de pago (efectivo, transferencia, USD, EUR) y cobro en segundos.</p>
+                    <p>Carrito, escáner de códigos de barras, múltiples métodos de pago (efectivo, transferencia, USD,
+                        EUR) y cobro en segundos.</p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal reveal-delay-1">
                     <div class="feature-icon fi-blue">📦</div>
                     <h3>Inventario inteligente</h3>
-                    <p>Controla stock, alertas de mínimos, productos compuestos (pizzas, combos), vencimientos y transferencias entre sucursales.</p>
+                    <p>Controla stock, alertas de mínimos, productos compuestos (pizzas, combos), vencimientos y
+                        transferencias entre sucursales.</p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal reveal-delay-2">
                     <div class="feature-icon fi-amber">👥</div>
                     <h3>Clientes y fiados</h3>
-                    <p>Registra a quién le fías, cuánto debe, sus teléfonos y hasta precios especiales para mayoristas.</p>
+                    <p>Registra a quién le fías, cuánto debe, sus teléfonos y hasta precios especiales para mayoristas.
+                    </p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal reveal-delay-3">
                     <div class="feature-icon fi-violet">🏪</div>
                     <h3>Múltiples sucursales</h3>
-                    <p>Administra varios locales con catálogos independientes. Cada tienda tiene sus productos, stock y vendedores.</p>
+                    <p>Administra varios locales con catálogos independientes. Cada tienda tiene sus productos, stock y
+                        vendedores.</p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal">
                     <div class="feature-icon fi-cyan">📷</div>
                     <h3>Escáner de códigos</h3>
-                    <p>Usa la cámara del móvil o conecta una pistola Bluetooth. Vende 5 veces más rápido sin teclear códigos.</p>
+                    <p>Usa la cámara del móvil o conecta una pistola Bluetooth. Vende 5 veces más rápido sin teclear
+                        códigos.</p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal reveal-delay-1">
                     <div class="feature-icon fi-indigo">💰</div>
                     <h3>Cierre de caja</h3>
-                    <p>Controla el efectivo al final del día, registra gastos (luz, agua, salarios) y lleva las cuentas claras.</p>
+                    <p>Controla el efectivo al final del día, registra gastos (luz, agua, salarios) y lleva las cuentas
+                        claras.</p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal reveal-delay-2">
                     <div class="feature-icon fi-rose">📊</div>
                     <h3>Reportes y PDFs</h3>
-                    <p>Genera reportes de inventario, fiados y ventas. Exporta a CSV para Excel. Imprime tickets en térmica.</p>
+                    <p>Genera reportes de inventario, fiados y ventas. Exporta a CSV para Excel. Imprime tickets en
+                        térmica.</p>
                 </div>
-                <div class="feature">
+                <div class="feature reveal reveal-delay-3">
                     <div class="feature-icon fi-pink">👤</div>
                     <h3>Control de vendedores</h3>
                     <p>Cada vendedor con su PIN. Comisiones automáticas. Registro de todo lo que hace cada uno.</p>
@@ -338,22 +1424,107 @@
         </div>
     </section>
 
+    <!-- ============================================================
+         HIGHLIGHT OFFLINE + STATS
+         ============================================================ -->
     <section class="section">
         <div class="container">
-            <div class="highlight">
-                <h2>Funciona aunque se vaya la luz o el internet</h2>
-                <p>Los datos se guardan en tu teléfono. Puedes vender en modo avión, sin WiFi y sin datos móviles. Cuando quieras, haces un backup a USB o lo compartes.</p>
-                <a href="#precios" class="btn btn-primary">Ver planes →</a>
+            <div class="highlight reveal">
+                <div class="highlight-content">
+                    <h2>Funciona aunque se vaya la luz o el internet</h2>
+                    <p>Los datos se guardan en tu teléfono. Puedes vender en modo avión, sin WiFi y sin datos móviles.
+                        Cuando quieras, haces un backup a USB o lo compartes.</p>
+                    <a href="#precios" class="btn btn-primary">Ver planes →</a>
+
+                    <div class="stats-grid">
+                        <div class="stat">
+                            <div class="stat-number" data-count="0">0</div>
+                            <div class="stat-label">MB de datos al mes</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" data-count="100" data-suffix="%">0%</div>
+                            <div class="stat-label">Offline real</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" data-count="15">0</div>
+                            <div class="stat-label">Días de prueba</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" data-count="24" data-suffix="/7">0/7</div>
+                            <div class="stat-label">Tu información</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- ============================================================
+         TESTIMONIOS
+         ============================================================ -->
+    <section class="section" id="testimonios">
+        <div class="container">
+            <h2 class="section-title reveal">Lo que dicen los que ya la usan</h2>
+            <p class="section-sub reveal reveal-delay-1">Negocios reales, resultados reales.</p>
+            <div class="testimonios-grid">
+                <div class="testimonio reveal">
+                    <div class="testimonio-text">
+                        "Antes tenía todo en una libreta y perdía la cuenta de los fiados. Ahora sé exactamente quién me
+                        debe y cuánto. La app me cambió el negocio."
+                    </div>
+                    <div class="testimonio-autor">
+                        <div class="testimonio-avatar">👨</div>
+                        <div class="testimonio-info">
+                            <div class="testimonio-nombre">Yoel M.</div>
+                            <div class="testimonio-cargo">Bodega "La Esquina"</div>
+                            <div class="testimonio-stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonio reveal reveal-delay-1">
+                    <div class="testimonio-text">
+                        "Lo que más me gusta es que funciona sin internet. Cuando se va la luz o la conexión yo sigo
+                        vendiendo como si nada. Mis vendedores la aprendieron en un día."
+                    </div>
+                    <div class="testimonio-autor">
+                        <div class="testimonio-avatar">👩</div>
+                        <div class="testimonio-info">
+                            <div class="testimonio-nombre">Mariela R.</div>
+                            <div class="testimonio-cargo">Mercadito "El Sol"</div>
+                            <div class="testimonio-stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonio reveal reveal-delay-2">
+                    <div class="testimonio-text">
+                        "Con el escáner y los códigos de barras ahora vendo el doble de rápido. Y el cierre de caja me
+                        toma 2 minutos, antes tardaba media hora con la calculadora."
+                    </div>
+                    <div class="testimonio-autor">
+                        <div class="testimonio-avatar">👨‍🦱</div>
+                        <div class="testimonio-info">
+                            <div class="testimonio-nombre">Carlos P.</div>
+                            <div class="testimonio-cargo">Carnicería "El Novillo"</div>
+                            <div class="testimonio-stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         PRICING
+         ============================================================ -->
     <section class="section" id="precios">
         <div class="container">
-            <h2 class="section-title">Precios simples, pago único</h2>
-            <p class="section-sub">Sin mensualidades. Sin suscripciones. La app es tuya para siempre.</p>
+            <h2 class="section-title reveal">Precios simples, pago único</h2>
+            <p class="section-sub reveal reveal-delay-1">Sin mensualidades. Sin suscripciones. La app es tuya para
+                siempre.</p>
             <div class="pricing">
-                <div class="price-card">
+                <div class="price-card reveal">
                     <div class="price-title">📱 Móvil</div>
                     <div class="price-amount">$20</div>
                     <div class="price-period">pago único · Android</div>
@@ -363,9 +1534,10 @@
                         <li>Actualizaciones gratis</li>
                         <li>Soporte por WhatsApp</li>
                     </ul>
-                    <a href="#comprar" class="btn btn-outline" style="width:100%; justify-content:center;">Comprar móvil</a>
+                    <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20el%20plan%20M%C3%B3vil"
+                        class="btn btn-outline" style="width:100%;" target="_blank">Comprar móvil</a>
                 </div>
-                <div class="price-card featured">
+                <div class="price-card featured reveal reveal-delay-1">
                     <div class="badge-pop">Más vendido</div>
                     <div class="price-title">💻 Pack completo</div>
                     <div class="price-amount">$35</div>
@@ -377,9 +1549,10 @@
                         <li>Soporte prioritario</li>
                         <li>Backup asistido</li>
                     </ul>
-                    <a href="#comprar" class="btn btn-primary" style="width:100%; justify-content:center;">Comprar pack</a>
+                    <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20el%20pack%20completo"
+                        class="btn btn-primary" style="width:100%;" target="_blank">Comprar pack</a>
                 </div>
-                <div class="price-card">
+                <div class="price-card reveal reveal-delay-2">
                     <div class="price-title">💼 Multi-sucursal</div>
                     <div class="price-amount">$60</div>
                     <div class="price-period">pago único · todo incluido</div>
@@ -390,70 +1563,200 @@
                         <li>Reportes consolidados</li>
                         <li>Soporte VIP</li>
                     </ul>
-                    <a href="#comprar" class="btn btn-outline" style="width:100%; justify-content:center;">Comprar multi</a>
+                    <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20el%20plan%20Multi-sucursal"
+                        class="btn btn-outline" style="width:100%;" target="_blank">Comprar multi</a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ============================================================
+         FAQ
+         ============================================================ -->
     <section class="section" id="faq">
         <div class="container">
-            <h2 class="section-title">Preguntas frecuentes</h2>
-            <p class="section-sub">Todo lo que necesitas saber antes de comprar.</p>
+            <h2 class="section-title reveal">Preguntas frecuentes</h2>
+            <p class="section-sub reveal reveal-delay-1">Todo lo que necesitas saber antes de comprar.</p>
             <div class="faq-list">
-                <div class="faq-item">
-                    <div class="faq-q">¿Necesito internet para usar la app?</div>
-                    <div class="faq-a">No. La app funciona 100% offline. Los datos se guardan en tu teléfono o PC. Solo necesitas internet la primera vez para descargarla.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Necesito internet para usar la app?<span class="chevron">⌄</span></div>
+                    <div class="faq-a">No. La app funciona 100% offline. Los datos se guardan en tu teléfono o PC. Solo
+                        necesitas internet la primera vez para descargarla.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Qué pasa si cambio de teléfono?</div>
-                    <div class="faq-a">Exportas un backup desde Configuración, lo guardas en Google Drive o Telegram, y lo importas en el nuevo dispositivo. Todos los datos se restauran.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Qué pasa si cambio de teléfono?<span class="chevron">⌄</span></div>
+                    <div class="faq-a">Exportas un backup desde Configuración, lo guardas en Google Drive o Telegram, y
+                        lo importas en el nuevo dispositivo. Todos los datos se restauran.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Puedo tener varias tiendas con productos distintos?</div>
-                    <div class="faq-a">Sí. Cada sucursal tiene su propio catálogo, stock y vendedores. Puedes ver reportes consolidados o por sucursal.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Puedo tener varias tiendas con productos distintos?<span
+                            class="chevron">⌄</span></div>
+                    <div class="faq-a">Sí. Cada sucursal tiene su propio catálogo, stock y vendedores. Puedes ver
+                        reportes consolidados o por sucursal.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Funciona con impresora térmica Bluetooth?</div>
-                    <div class="faq-a">Sí. En Android, instala la app gratuita RawBT y podrás imprimir tickets en cualquier impresora térmica Bluetooth compatible con ESC/POS.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Funciona con impresora térmica Bluetooth?<span class="chevron">⌄</span></div>
+                    <div class="faq-a">Sí. En Android, instala la app gratuita RawBT y podrás imprimir tickets en
+                        cualquier impresora térmica Bluetooth compatible con ESC/POS.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Qué pasa si olvido mi PIN?</div>
-                    <div class="faq-a">Contacta al administrador del sistema (el jefe del negocio) para que resetee tu PIN desde el panel de Usuarios.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Qué pasa si olvido mi PIN?<span class="chevron">⌄</span></div>
+                    <div class="faq-a">Contacta al administrador del sistema (el jefe del negocio) para que resetee tu
+                        PIN desde el panel de Usuarios.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Cómo activo la licencia después de comprarla?</div>
-                    <div class="faq-a">Recibirás un código por WhatsApp. Lo introduces en Configuración → Activar Licencia. La app se desbloquea de inmediato.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Cómo activo la licencia después de comprarla?<span class="chevron">⌄</span>
+                    </div>
+                    <div class="faq-a">Recibirás un código por WhatsApp. Lo introduces en Configuración → Activar
+                        Licencia. La app se desbloquea de inmediato.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Los datos son míos o del desarrollador?</div>
-                    <div class="faq-a">Son 100% tuyos. Viven en tu dispositivo, no hay servidores externos. Nadie más puede verlos.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Los datos son míos o del desarrollador?<span class="chevron">⌄</span></div>
+                    <div class="faq-a">Son 100% tuyos. Viven en tu dispositivo, no hay servidores externos. Nadie más
+                        puede verlos.</div>
                 </div>
-                <div class="faq-item">
-                    <div class="faq-q">¿Ofrecen descuentos por volumen?</div>
-                    <div class="faq-a">Sí. Si tienes varios locales o quieres comprar para varios negocios, contáctanos por WhatsApp para un precio especial.</div>
+                <div class="faq-item reveal">
+                    <div class="faq-q">¿Ofrecen descuentos por volumen?<span class="chevron">⌄</span></div>
+                    <div class="faq-a">Sí. Si tienes varios locales o quieres comprar para varios negocios, contáctanos
+                        por WhatsApp para un precio especial.</div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ============================================================
+         CTA FINAL
+         ============================================================ -->
     <section class="container">
-        <div class="cta-final" id="comprar">
+        <div class="cta-final reveal" id="comprar">
             <h2>Empieza gratis por 15 días</h2>
-            <p>Descarga la app, pruébala con tu negocio y si te convence, activas la licencia. Sin tarjeta de crédito. Sin compromisos.</p>
-            <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20probar%20CuentaClara%20en%20mi%20negocio" class="btn btn-primary" target="_blank">
+            <p>Descarga la app, pruébala con tu negocio y si te convence, activas la licencia. Sin tarjeta de crédito.
+                Sin compromisos.</p>
+            <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20probar%20CuentaClara%20en%20mi%20negocio"
+                class="btn btn-primary" target="_blank">
                 💬 Escribir por WhatsApp
             </a>
         </div>
     </section>
 
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
     <footer>
         <div class="container">
             <p><strong>CuentaClara</strong> · Gestión de negocios 100% offline</p>
-            <p style="margin-top: 8px;">Hecho en Cuba 🇨🇺 · Contacto: +53 55501545</p>
-            <p style="margin-top: 8px; font-size: 12px;">© 2026 CuentaClara. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="#features">Características</a>
+                <a href="#precios">Precios</a>
+                <a href="#faq">Preguntas</a>
+                <a href="https://wa.me/5355501545" target="_blank">Contacto</a>
+            </div>
+            <p>Hecho en Cuba 🇨🇺 · Contacto: <strong>+53 55501545</strong></p>
+            <p style="margin-top: 10px; font-size: 12px;">© 2026 CuentaClara. Todos los derechos reservados.</p>
         </div>
     </footer>
-</body>
-</html>
 
+    <!-- ============================================================
+         BOTÓN FLOTANTE WHATSAPP
+         ============================================================ -->
+    <a href="https://wa.me/5355501545?text=Hola%21%20Quiero%20saber%20m%C3%A1s%20de%20CuentaClara"
+        class="whatsapp-float" target="_blank" aria-label="Contactar por WhatsApp">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+    </a>
+
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
+    <script>
+        // ===== MENÚ MÓVIL =====
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            menuToggle.textContent = navLinks.classList.contains('open') ? '✕' : '☰';
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                menuToggle.textContent = '☰';
+            });
+        });
+
+        // ===== HEADER SCROLL =====
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        }, { passive: true });
+
+        // ===== REVEAL ON SCROLL =====
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ===== FAQ ACCORDION =====
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const q = item.querySelector('.faq-q');
+            q.addEventListener('click', () => {
+                const estabaAbierto = item.classList.contains('open');
+                // Cerrar todos
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+                // Abrir este si estaba cerrado
+                if (!estabaAbierto) item.classList.add('open');
+            });
+        });
+        // Abrir primero por defecto
+        document.querySelector('.faq-item')?.classList.add('open');
+
+        // ===== CONTADOR ANIMADO =====
+        const counters = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target;
+                const target = parseInt(el.dataset.count, 10);
+                const suffix = el.dataset.suffix || '';
+                const duration = 1500;
+                const startTime = performance.now();
+
+                const tick = (now) => {
+                    const progress = Math.min((now - startTime) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                    const value = Math.round(eased * target);
+                    el.textContent = value + suffix;
+                    if (progress < 1) requestAnimationFrame(tick);
+                    else el.textContent = target + suffix;
+                };
+
+                requestAnimationFrame(tick);
+                counterObserver.unobserve(el);
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(el => counterObserver.observe(el));
+
+        // ===== SMOOTH SCROLL para navegadores que no lo soportan =====
+        if (!('scrollBehavior' in document.documentElement.style)) {
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', (e) => {
+                    const target = document.querySelector(a.getAttribute('href'));
+                    if (!target) return;
+                    e.preventDefault();
+                    window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
